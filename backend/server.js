@@ -28,7 +28,7 @@ app.listen(port, () => {
 });
 
 
-app.use("/user", UserRoutes);
-app.use("/project", ProjectRoutes);
-app.use("/task", TaskRoutes);
-app.use("/comment", CommentRoutes);
+app.use("/api/user", UserRoutes);
+app.use("/api/project", ProjectRoutes);
+app.use("/api/task", TaskRoutes);
+app.use("/api/comment", CommentRoutes);

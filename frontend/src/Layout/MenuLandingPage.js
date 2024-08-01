@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -17,7 +16,12 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
+import { Button } from '@mui/material';
+import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
+import GroupIcon from '@mui/icons-material/Group';
 
 const drawerWidth = 240;
 
@@ -67,8 +71,9 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 const MenuLandingPage = ({ children }) => {
+    const navigate = useNavigate()
     const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(true);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -78,23 +83,40 @@ const MenuLandingPage = ({ children }) => {
         setOpen(false);
     };
 
+    const Routes = [
+        { title: 'Tasks', route: "/task", icon: <AssignmentIcon /> },
+        { title: 'Projects', route: "/project", icon: <AccountTreeIcon /> },
+        { title: 'Users', route: "/user", icon: <GroupIcon /> }
+    ];
+
+    const handleLogout = () => {
+        localStorage.removeItem("task_management_token");
+        navigate("/")
+    }
+
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
             <AppBar position="fixed" open={open}>
                 <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        edge="start"
-                        sx={{ mr: 2, ...(open && { display: 'none' }) }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography variant="h6" noWrap component="div">
-                        Persistent drawer
+                    {
+                        !open &&
+                        <IconButton
+                            size="large"
+                            edge="start"
+                            color="inherit"
+                            aria-label="menu"
+                            sx={{ mr: 2 }}
+                            onClick={handleDrawerOpen}
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                    }
+
+                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                        Task Management
                     </Typography>
+                    <Button color="inherit" onClick={() => handleLogout()}>Logout</Button>
                 </Toolbar>
             </AppBar>
             <Drawer
@@ -117,28 +139,17 @@ const MenuLandingPage = ({ children }) => {
                 </DrawerHeader>
                 <Divider />
                 <List>
-                    {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                        <ListItem key={text} disablePadding>
-                            <ListItemButton>
-                                <ListItemIcon>
-                                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                                </ListItemIcon>
-                                <ListItemText primary={text} />
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
-                </List>
-                <Divider />
-                <List>
-                    {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                        <ListItem key={text} disablePadding>
-                            <ListItemButton>
-                                <ListItemIcon>
-                                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                                </ListItemIcon>
-                                <ListItemText primary={text} />
-                            </ListItemButton>
-                        </ListItem>
+                    {Routes.map((res, index) => (
+                        <Link to={res?.route} style={{ textDecoration: 'none', color: "black" }}>
+                            <ListItem key={index} disablePadding>
+                                <ListItemButton>
+                                    <ListItemIcon>
+                                        {res?.icon}
+                                    </ListItemIcon>
+                                    <ListItemText primary={res?.title} />
+                                </ListItemButton>
+                            </ListItem>
+                        </Link>
                     ))}
                 </List>
             </Drawer>

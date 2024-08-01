@@ -1,11 +1,14 @@
 import './App.css';
 import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
-import Home from './Pages/Home';
+import Task from './Pages/views/Task';
 import { Navigate } from 'react-router-dom'
-import LandingPage from './Pages/LandingPage';
+import Project from './Pages/views/Project';
+import User from './Pages/views/User';
+import Register from './Pages/views/Register';
+import Login from './Pages/views/Login';
 
 function ProtectedRoute() {
-  let isAuthenticated = true
+  let isAuthenticated = localStorage.getItem("task_management_token")
   if (!isAuthenticated) {
     return <Navigate to="/" replace />;
   }
@@ -17,9 +20,12 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route element={<ProtectedRoute />}>
-          <Route path="/home" element={<Home />} />
+          <Route path="/task" element={<Task />} />
+          <Route path="/project" element={<Project />} />
+          <Route path="/user" element={<User />} />
         </Route>
       </Routes>
     </BrowserRouter>
