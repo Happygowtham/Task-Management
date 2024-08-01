@@ -1,8 +1,8 @@
-const Task = require('../models/Task');
+const Comment = require('../models/Comment');
 
-exports.getTasks = async (req, res) => {
+exports.getComments = async (req, res) => {
     try {
-        const data = await Task.find()
+        const data = await Comment.find()
             .then(function (response) {
                 return res.status(200).json({
                     statuscode: 200,
@@ -21,9 +21,9 @@ exports.getTasks = async (req, res) => {
     }
 };
 
-exports.addTasks = async (req, res) => {
+exports.addComment = async (req, res) => {
     try {
-        const data = await Task.create(req.body)
+        const data = await Comment.create(req.body)
             .then(function (response) {
                 return res.status(200).json({
                     statuscode: 200,
@@ -42,9 +42,9 @@ exports.addTasks = async (req, res) => {
     }
 };
 
-exports.updateTasks = async (req, res) => {
+exports.updateComment = async (req, res) => {
     try {
-        const data = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true })
+        const data = await Comment.findByIdAndUpdate(req.params.id, req.body, { new: true })
             .then(function (response) {
                 return res.status(200).json({
                     statuscode: 200,
@@ -63,9 +63,9 @@ exports.updateTasks = async (req, res) => {
     }
 };
 
-exports.deleteTasks = async (req, res) => {
+exports.deleteComment = async (req, res) => {
     try {
-        const data = await Task.findByIdAndDelete(req.params.id)
+        const data = await Comment.findByIdAndDelete(req.params.id)
             .then(function (response) {
                 return res.status(200).json({
                     statuscode: 200,

@@ -1,18 +1,23 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+require("dotenv").config();
 const bodyParser = require("body-parser");
+const ProjectRoutes = require("./routes/ProjectRoute");
+const UserRoutes = require("./routes/UserRoute");
 const TaskRoutes = require("./routes/TaskRoute");
+const CommentRoutes = require("./routes/CommentRoute");
+
 
 const app = express();
-const port = 5000;
+const port = process.env.PORT;
 
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json({ limit: "50mb " }));
 
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://root1:root1@cluster1.o8snmnv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster1', {
+mongoose.connect(process.env.CONNECTION_STRING, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
@@ -23,4 +28,7 @@ app.listen(port, () => {
 });
 
 
+app.use("/user", UserRoutes);
+app.use("/project", ProjectRoutes);
 app.use("/task", TaskRoutes);
+app.use("/comment", CommentRoutes);
