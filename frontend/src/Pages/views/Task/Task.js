@@ -4,11 +4,14 @@ import axiosInstance from "../../../axiosInstance"
 import { Box, Button, Card, CardContent, Grid, IconButton, Rating, Typography } from "@mui/material";
 import TaskForm from "./TaskForm";
 import DeleteIcon from '@mui/icons-material/Delete';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import TaskPreview from "./TaskPreview";
 
 const Task = () => {
 
     const [data, setData] = useState([]);
     const [modal, setModal] = useState({ show: false, data: "" });
+    const [previewModal, setPreviewModal] = useState({ show: false, data: "" });
 
     useEffect(() => {
         getData()
@@ -40,11 +43,21 @@ const Task = () => {
         })
     }
 
+    const handlePreview = (e, data) => {
+        e?.stopPropagation()
+        setPreviewModal({ show: true, data: data })
+    }
+
     return (
         <Base>
             {
                 modal?.show && (
                     <TaskForm show={modal?.show} data={modal?.data} onClose={handleMoalClose} />
+                )
+            }
+            {
+                previewModal?.show && (
+                    <TaskPreview show={previewModal?.show} data={previewModal?.data} onClose={handleMoalClose} />
                 )
             }
             <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
@@ -58,7 +71,10 @@ const Task = () => {
                             <CardContent>
                                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                                     <Typography variant="h6">{item.title}</Typography>
-                                    <IconButton onClick={(e) => handleDelete(e, item?._id)}><DeleteIcon fontSize="small" /></IconButton>
+                                    <Box>
+                                        <IconButton sx={{ padding: "3px" }} onClick={(e) => handlePreview(e, item)}><RemoveRedEyeIcon color="info" fontSize="small" /></IconButton>
+                                        <IconButton sx={{ padding: "3px" }} onClick={(e) => handleDelete(e, item?._id)}><DeleteIcon color="error" fontSize="small" /></IconButton>
+                                    </Box>
                                 </Box>
                                 <Rating
                                     name="simple-controlled"

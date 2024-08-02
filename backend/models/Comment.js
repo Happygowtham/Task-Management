@@ -7,6 +7,7 @@ mongoose.connect(process.env.CONNECTION_STRING, {
 });
 
 const CommentSchema = new Schema({
+    comment: { type: String, required: true },
     commentBy: { type: Schema.Types.ObjectId, ref: 'User' },
     commentTo: { type: Schema.Types.ObjectId, ref: 'Task' },
 }, { timestamps: true });
