@@ -57,7 +57,7 @@ const Task = () => {
             }
             {
                 previewModal?.show && (
-                    <TaskPreview show={previewModal?.show} data={previewModal?.data} onClose={handleMoalClose} />
+                    <TaskPreview show={previewModal?.show} data={previewModal?.data} onClose={() => setPreviewModal(false)} />
                 )
             }
             <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
@@ -65,7 +65,7 @@ const Task = () => {
                 <Button variant="contained" color="primary" size="small" onClick={() => setModal({ show: true, data: "" })}>Add Task</Button>
             </Box>
             <Grid container spacing={2}>
-                {data.map((item, index) => (
+                {data?.length > 0 ? data.map((item, index) => (
                     <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
                         <Card sx={{ cursor: "pointer" }} variant="outlined" onClick={() => setModal({ show: true, data: item })}>
                             <CardContent>
@@ -88,7 +88,11 @@ const Task = () => {
                             </CardContent>
                         </Card>
                     </Grid>
-                ))}
+                )) :
+                    <Typography variant="h6" sx={{ alignItems: "center" }}>
+                        No Data Available
+                    </Typography>
+                }
             </Grid>
         </Base>
     )

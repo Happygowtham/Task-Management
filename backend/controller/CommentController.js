@@ -3,6 +3,7 @@ const Comment = require('../models/Comment');
 exports.getComments = async (req, res) => {
     try {
         const data = await Comment.find({ commentTo: req.params.taskId })
+            .populate('commentBy', 'name')
             .then(function (response) {
                 return res.status(200).json({
                     statuscode: 200,

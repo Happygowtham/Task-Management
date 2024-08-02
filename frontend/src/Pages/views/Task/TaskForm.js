@@ -1,6 +1,7 @@
 import { Alert, Box, Button, FormControl, InputLabel, MenuItem, Modal, Rating, Select, Snackbar, TextField, Typography } from "@mui/material"
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../axiosInstance";
+import { sendEmail } from "../../../helper/SendEmail";
 
 const style = {
     position: 'absolute',
@@ -25,7 +26,7 @@ const TaskForm = ({ data, show, onClose }) => {
         dueDate: "",
     }
 
-    const [formData, setFormData] = useState({ ...intialValue, status: "pending" })
+    const [formData, setFormData] = useState({ ...intialValue, status: "pending", priority: "1" })
     const [alert, setAlert] = useState({ show: false, message: "", type: "" })
     const [errors, setErrors] = useState(intialValue);
     const [projectData, setProjectData] = useState([])
@@ -93,6 +94,11 @@ const TaskForm = ({ data, show, onClose }) => {
                 }
             }).then(res => {
                 onClose()
+                sendEmail({
+                    to: formData?.assignedTo,
+                    subject: "Task Assigned",
+                    content: "Task Assigned Successfully"
+                })
             }).catch(err => {
                 setAlert({ show: true, message: err?.error?.[0]?.message, type: "error" })
             })

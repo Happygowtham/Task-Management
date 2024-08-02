@@ -72,7 +72,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 const MenuLandingPage = ({ children }) => {
     const navigate = useNavigate()
     const theme = useTheme();
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
     const user = JSON.parse(localStorage?.getItem("task_management_user"));
 
     const handleDrawerOpen = () => {

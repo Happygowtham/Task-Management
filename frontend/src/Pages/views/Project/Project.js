@@ -72,7 +72,7 @@ const Project = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {data?.map((row, id) => (
+                        {data?.length > 0 ? data?.map((row, id) => (
                             <TableRow
                                 key={row.name}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -90,7 +90,9 @@ const Project = () => {
                                     </IconButton>
                                 </TableCell>
                             </TableRow>
-                        ))}
+                        ))
+                            : <Typography variant='h6'>No Data Available</Typography>
+                        }
                     </TableBody>
                 </Table>
             </TableContainer>

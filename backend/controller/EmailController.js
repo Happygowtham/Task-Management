@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
 const { EMAIL_HOST, EMAIL_PORT, EMAIL_USER, EMAIL_PASS } = require('../config');
+const User = require('../models/User');
 
 const transporter = nodemailer.createTransport({
     host: EMAIL_HOST,
@@ -11,18 +12,31 @@ const transporter = nodemailer.createTransport({
 });
 
 exports.sendEmail = (req, res) => {
-    const mailOptions = {
-        from: EMAIL_USER,
-        to: req.to,
-        subject: req.subject,
-        html: email_content,
-    };
+    User.findById(req.body.to).then(mail => {
+        const mailOptions = {
+            from: EMAIL_USER,
+            to: mail.email,
+            subject: req.body.subject,
+            html: req.body.email_content,
+        };
 
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.log(error);
-        } else {
-            console.log('Email sent: ' + info.response);
-        }
-    });
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                res.status(500).json({
+                    statuscode: 500,
+                    status: "failed",
+                    data: {},
+                    error: [{ message: error.message, errorcode: 500 }],
+                });
+            } else {
+                return res.status(200).json({
+                    statuscode: 200,
+                    status: "success",
+                    data: "Email sent successfully!",
+                    error: [{ message: "", errorcode: "" }],
+                });
+            }
+        });
+    })
+
 };

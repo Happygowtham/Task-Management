@@ -7,7 +7,7 @@ const ProjectRoutes = require("./routes/ProjectRoute");
 const UserRoutes = require("./routes/UserRoute");
 const TaskRoutes = require("./routes/TaskRoute");
 const CommentRoutes = require("./routes/CommentRoute");
-
+const EmailRoute = require("./routes/EmailRoute");
 
 const app = express();
 const port = process.env.PORT;
@@ -32,3 +32,4 @@ app.use("/api/user", UserRoutes);
 app.use("/api/project", ProjectRoutes);
 app.use("/api/task", TaskRoutes);
 app.use("/api/comment", CommentRoutes);
+app.use("/api/", EmailRoute);
