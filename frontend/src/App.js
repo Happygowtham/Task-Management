@@ -1,9 +1,9 @@
 import './App.css';
 import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
-import Task from './Pages/views/Task';
 import { Navigate } from 'react-router-dom'
-import Project from './Pages/views/Project';
-import User from './Pages/views/User';
+import Task from './Pages/views/Task/Task';
+import Project from './Pages/views/Project/Project';
+import User from './Pages/views/User/User';
 import Register from './Pages/views/Register';
 import Login from './Pages/views/Login';
 

@@ -15,7 +15,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
 import { Button } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
@@ -74,6 +73,7 @@ const MenuLandingPage = ({ children }) => {
     const navigate = useNavigate()
     const theme = useTheme();
     const [open, setOpen] = useState(true);
+    const user = JSON.parse(localStorage?.getItem("task_management_user"));
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -84,9 +84,9 @@ const MenuLandingPage = ({ children }) => {
     };
 
     const Routes = [
-        { title: 'Tasks', route: "/task", icon: <AssignmentIcon /> },
-        { title: 'Projects', route: "/project", icon: <AccountTreeIcon /> },
-        { title: 'Users', route: "/user", icon: <GroupIcon /> }
+        { title: 'Tasks', route: "/task", icon: <AssignmentIcon />, show: true },
+        { title: 'Projects', route: "/project", icon: <AccountTreeIcon />, show: user?.role === "admin" },
+        { title: 'Users', route: "/user", icon: <GroupIcon />, show: user?.role === "admin" }
     ];
 
     const handleLogout = () => {
@@ -140,8 +140,9 @@ const MenuLandingPage = ({ children }) => {
                 <Divider />
                 <List>
                     {Routes.map((res, index) => (
-                        <Link to={res?.route} style={{ textDecoration: 'none', color: "black" }}>
-                            <ListItem key={index} disablePadding>
+                        res?.show &&
+                        <Link key={index} to={res?.route} style={{ textDecoration: 'none', color: "black" }}>
+                            <ListItem disablePadding>
                                 <ListItemButton>
                                     <ListItemIcon>
                                         {res?.icon}

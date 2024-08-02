@@ -28,11 +28,11 @@ const Login = () => {
             method: "post",
             data: data
         }).then(res => {
-            console.log('res: ', res);
+            localStorage?.setItem("task_management_token", res.data?.token)
+            localStorage?.setItem("task_management_user", JSON.stringify(res.data?.user))
             navigate("/task")
-            localStorage?.setItem("task_management_token", res.data?.data)
         }).catch(err => {
-            setAlert({ show: true, message: err.response.data.message, type: "error" })
+            setAlert({ show: true, message: err?.message, type: "error" })
         })
     };
 

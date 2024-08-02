@@ -10,7 +10,7 @@ const TaskSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String },
   dueDate: { type: Date },
-  priority: { type: Number, enum: [1, 2, 3], default: 1 },
+  priority: { type: String, enum: ['1', '2', '3'], default: '1' },
   status: { type: String, enum: ['pending', 'in-progress', 'completed'], default: 'pending' },
   assignedTo: { type: Schema.Types.ObjectId, ref: 'User' },
   projectId: { type: Schema.Types.ObjectId, ref: 'Project' },

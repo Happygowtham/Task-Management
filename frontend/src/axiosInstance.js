@@ -9,7 +9,7 @@ axiosInstance.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem("task_management_token");;
         config.headers.Authorization = token
-            ? `JWT ${token}`
+            ? `${token}`
             : "";
         return config;
     },
@@ -20,7 +20,7 @@ axiosInstance.interceptors.request.use(
 
 
 axiosInstance.interceptors.response.use(
-    (response) => Promise.resolve(response),
+    (response) => Promise.resolve(response?.data),
     async (error) => {
         if (!error.response) {
             return Promise.reject(error);
@@ -29,7 +29,7 @@ axiosInstance.interceptors.response.use(
                 const newConfig = error.config;
                 const token = localStorage.getItem("task_management_token");
                 newConfig.headers.Authorization = token
-                    ? `JWT ${token}`
+                    ? `${token}`
                     : "";
                 axios(newConfig)
                     .then((response) => {
@@ -40,7 +40,7 @@ axiosInstance.interceptors.response.use(
                     });
             });
         } else {
-            return Promise.reject(error);
+            return Promise.reject(error?.response?.data);
         }
     }
 );

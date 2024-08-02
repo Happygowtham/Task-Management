@@ -10,7 +10,8 @@ import Typography from '@mui/material/Typography';
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from 'react';
 import axiosInstance from '../../axiosInstance';
-import { Alert, Snackbar } from '@mui/material';
+import { Alert, FormControl, FormHelperText, InputLabel, MenuItem, Select, Snackbar } from '@mui/material';
+import { isValidEmail } from '../../helper/BaseFunction';
 
 const Register = () => {
 
@@ -19,26 +20,53 @@ const Register = () => {
         name: "",
         email: "",
         password: "",
-        conPassword: ""
+        conPassword: "",
+        role: "user"
     }
     const [data, setData] = useState(initValue)
+    const [errors, setErrors] = useState({ ...initValue, role: "" })
     const [alert, setAlert] = useState({ show: false, message: "", type: "" })
 
     const handleChange = (e) => {
         setData({ ...data, [e.target.name]: e.target.value })
     }
 
+    const validate = (fieldValues = data) => {
+        let temp = { ...errors };
+
+        if ("name" in fieldValues) {
+            temp.name = fieldValues.name?.trim() === "" ? "Full Name is required" : '';
+        } if ("email" in fieldValues) {
+            temp.email = fieldValues.email?.trim() === "" ? "Email is required" : isValidEmail(fieldValues?.email) ? "" : "Please enter valid Email";
+        } if ("password" in fieldValues) temp.password = fieldValues?.password?.trim() === "" ? "Please enter Password" :
+            fieldValues?.password?.trim()?.length < 8 ? "Password must be between 8 to 16 characters" :
+                (!/[a-z]/.test(fieldValues?.password?.trim()) ||
+                    !/[A-Z]/.test(fieldValues?.password?.trim()) ||
+                    !/[0-9]/.test(fieldValues?.password?.trim()) ||
+                    !/[^a-zA-Z0-9]/.test(fieldValues?.password?.trim()) ||
+                    !/[_!@#$%^&*]/.test(fieldValues?.password?.trim())) ? "Password should include Numbers, Symbols, and Uppercase and Lowercase Letters"
+                    : "";
+        if ("conPassword" in fieldValues) temp.conPassword = fieldValues?.conPassword === "" ? "Please enter Confirm Password" :
+            fieldValues?.password !== fieldValues?.conPassword ? "Confirm Password must match with password" : "";
+
+        setErrors({ ...temp });
+
+        return Object.values(temp).every((x) => x === "");
+    };
+
     const handleSubmit = () => {
-        axiosInstance('user/register/', {
-            method: "post",
-            data: data
-        }).then(res => {
-            setAlert({ show: true, message: res.data.message, type: "success" })
-            setData(initValue)
-            setTimeout(() => { navigate("/") }, 3000)
-        }).catch(err => {
-            setAlert({ show: true, message: err.response.data.message, type: "error" })
-        })
+        if (validate()) {
+            axiosInstance('user/register/', {
+                method: "post",
+                data: data
+            }).then(res => {
+                setAlert({ show: true, message: res?.message, type: "success" })
+                setData(initValue)
+                setTimeout(() => { navigate("/") }, 3000)
+            }).catch(err => {
+                setAlert({ show: true, message: err.response.data.message, type: "error" })
+            })
+        }
     };
 
     return (
@@ -83,53 +111,84 @@ const Register = () => {
                             Sign in
                         </Typography>
                         <Box noValidate sx={{ mt: 1 }}>
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="name"
-                                label="Full Name"
-                                name="name"
-                                autoComplete="name"
-                                autoFocus
-                                onChange={handleChange}
-                                value={data.name}
-                            />
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="email"
-                                label="Email Address"
-                                name="email"
-                                autoComplete="email"
-                                onChange={handleChange}
-                                value={data.email}
-                            />
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                name="password"
-                                label="Password"
-                                type="password"
-                                id="password"
-                                autoComplete="current-password"
-                                onChange={handleChange}
-                                value={data.password}
-                            />
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                name="conPassword"
-                                label="Confirm Password"
-                                type="password"
-                                id="password"
-                                autoComplete="current-password"
-                                onChange={handleChange}
-                                value={data.conPassword}
-                            />
+                            <FormControl fullWidth>
+                                <TextField
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    id="name"
+                                    label="Full Name"
+                                    name="name"
+                                    autoComplete="name"
+                                    autoFocus
+                                    onChange={handleChange}
+                                    value={data.name}
+                                    size="small"
+                                />
+                                <FormHelperText sx={{ color: 'red' }}>{errors.name}</FormHelperText>
+                            </FormControl>
+                            <FormControl fullWidth>
+                                <TextField
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    id="email"
+                                    label="Email Address"
+                                    name="email"
+                                    autoComplete="email"
+                                    onChange={handleChange}
+                                    value={data.email}
+                                    size="small"
+                                />
+                                <FormHelperText sx={{ color: 'red' }}>{errors.email}</FormHelperText>
+                            </FormControl>
+                            <FormControl fullWidth>
+                                <TextField
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    name="password"
+                                    label="Password"
+                                    type="password"
+                                    id="password"
+                                    autoComplete="current-password"
+                                    onChange={handleChange}
+                                    value={data.password}
+                                    size="small"
+                                />
+                                <FormHelperText sx={{ color: 'red' }}>{errors.password}</FormHelperText>
+                            </FormControl>
+                            <FormControl fullWidth>
+                                <TextField
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    name="conPassword"
+                                    label="Confirm Password"
+                                    type="password"
+                                    id="conpassword"
+                                    autoComplete="current-con-password"
+                                    onChange={handleChange}
+                                    value={data.conPassword}
+                                    size="small"
+                                />
+                                <FormHelperText sx={{ color: 'red' }}>{errors.conPassword}</FormHelperText>
+                            </FormControl>
+                            <FormControl fullWidth sx={{ mt: 2 }}>
+                                <InputLabel id="demo-simple-select-label" size="small">Role</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={data?.role || ""}
+                                    label="Role"
+                                    onChange={handleChange}
+                                    size="small"
+                                    name="role"
+                                >
+                                    <MenuItem value={"user"}>User</MenuItem>
+                                    <MenuItem value={"admin"}>Admin</MenuItem>
+                                </Select>
+                            </FormControl>
                             <Button
                                 type="submit"
                                 fullWidth
