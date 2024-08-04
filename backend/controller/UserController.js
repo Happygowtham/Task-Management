@@ -37,6 +37,23 @@ exports.Login = async (req, res) => {
 };
 
 
+exports.changePassword = async (req, res) => {
+    try {
+        const { id, newPassword } = req.body;
+        const user = await User.findById(id);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+        await user.save();
+
+        res.status(200).json({ message: 'Password changed successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
 exports.getUsers = async (req, res) => {
     try {
         const data = await User.find()

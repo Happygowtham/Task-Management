@@ -15,7 +15,7 @@ const style = {
     p: 4,
 };
 
-const TaskForm = ({ data, show, onClose }) => {
+const TaskForm = ({ data, show, onClose, user, type }) => {
     const intialValue = {
         projectId: "",
         title: "",
@@ -26,7 +26,8 @@ const TaskForm = ({ data, show, onClose }) => {
         dueDate: "",
     }
 
-    const [formData, setFormData] = useState({ ...intialValue, status: "pending", priority: "1" })
+
+    const [formData, setFormData] = useState({ ...intialValue, status: "pending", priority: "1", })
     const [alert, setAlert] = useState({ show: false, message: "", type: "" })
     const [errors, setErrors] = useState(intialValue);
     const [projectData, setProjectData] = useState([])
@@ -91,14 +92,21 @@ const TaskForm = ({ data, show, onClose }) => {
                     projectId: formData?.projectId,
                     status: formData?.status,
                     title: formData?.title,
+                    createdBy: user?._id,
                 }
             }).then(res => {
                 onClose()
-                sendEmail({
-                    to: formData?.assignedTo,
-                    subject: "Task Assigned",
-                    content: "Task Assigned Successfully"
-                })
+                data === "" ?
+                    sendEmail({
+                        to: formData?.assignedTo,
+                        subject: "Task Assigned",
+                        content: `${user?.name} has assigned you a new task titled - ${formData?.title}`
+                    })
+                    : sendEmail({
+                        to: user?._id,
+                        subject: "Task Status Updated",
+                        content: `${user?.name} has updated the task titled - ${formData?.title}`
+                    })
             }).catch(err => {
                 setAlert({ show: true, message: err?.error?.[0]?.message, type: "error" })
             })
@@ -132,6 +140,7 @@ const TaskForm = ({ data, show, onClose }) => {
                             onChange={handleChange}
                             size="small"
                             name="projectId"
+                            disabled={type === "my"}
                         >
                             {
                                 projectData?.map(res => {
@@ -152,6 +161,7 @@ const TaskForm = ({ data, show, onClose }) => {
                         name="title"
                         value={formData?.title}
                         onChange={handleChange}
+                        disabled={type === "my"}
                     />
                     <Typography variant="body1" color={"error"}>{errors?.title}</Typography>
                     <TextField
@@ -164,6 +174,7 @@ const TaskForm = ({ data, show, onClose }) => {
                         name="dueDate"
                         value={formData?.dueDate}
                         onChange={handleChange}
+                        disabled={type === "my"}
                     />
                     <Typography variant="body1" color={"error"}>{errors?.dueDate}</Typography>
                     <FormControl fullWidth sx={{ mt: 2 }}>
@@ -176,6 +187,7 @@ const TaskForm = ({ data, show, onClose }) => {
                             onChange={handleChange}
                             size="small"
                             name="assignedTo"
+                            disabled={type === "my"}
                         >
                             {
                                 userData?.map(res => {
@@ -196,6 +208,7 @@ const TaskForm = ({ data, show, onClose }) => {
                         name="description"
                         value={formData?.description}
                         onChange={handleChange}
+                        disabled={type === "my"}
                     />
                     <FormControl fullWidth sx={{ mt: 2 }}>
                         <InputLabel id="demo-simple-select-label">Status</InputLabel>
@@ -219,6 +232,7 @@ const TaskForm = ({ data, show, onClose }) => {
                         value={formData?.priority || 0}
                         onChange={handleChange}
                         max={3}
+                        disabled={type === "my"}
                     />
                     <Box display="flex">
                         <Button sx={{ m: 2 }} variant="contained" color="error" onClick={onClose} fullWidth>Cancel</Button>

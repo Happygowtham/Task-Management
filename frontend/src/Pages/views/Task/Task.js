@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import Base from "../../../Layout/Base"
 import axiosInstance from "../../../axiosInstance"
 import { Box, Button, Card, CardContent, Grid, IconButton, Rating, Typography } from "@mui/material";
 import TaskForm from "./TaskForm";
@@ -7,8 +6,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import TaskPreview from "./TaskPreview";
 
-const Task = () => {
+const Task = ({ type }) => {
 
+    const user = JSON.parse(localStorage?.getItem("task_management_user"));
     const [data, setData] = useState([]);
     const [modal, setModal] = useState({ show: false, data: "" });
     const [previewModal, setPreviewModal] = useState({ show: false, data: "" });
@@ -18,7 +18,8 @@ const Task = () => {
     }, [])
 
     const getData = () => {
-        axiosInstance('/task/getTasks/', {
+        let url = type === "my" ? `/task/getMyTasks/${user?._id}` : `/task/getAssignedTasks/${user?._id}`
+        axiosInstance(url, {
             method: 'GET',
         }).then(res => {
             setData(res?.data)
@@ -49,10 +50,10 @@ const Task = () => {
     }
 
     return (
-        <Base>
+        <>
             {
                 modal?.show && (
-                    <TaskForm show={modal?.show} data={modal?.data} onClose={handleMoalClose} />
+                    <TaskForm type={type} user={user} show={modal?.show} data={modal?.data} onClose={handleMoalClose} />
                 )
             }
             {
@@ -81,6 +82,8 @@ const Task = () => {
                                     value={item?.priority || 0}
                                     size="small"
                                     max={3}
+                                    readOnly
+                                    disableHoverRating
                                 />
                                 <Typography variant="body2">
                                     {item.description}
@@ -94,7 +97,7 @@ const Task = () => {
                     </Typography>
                 }
             </Grid>
-        </Base>
+        </>
     )
 }
 

@@ -37,6 +37,7 @@ exports.sendEmail = (req, res) => {
                 });
             }
         });
+    }).catch(err => {
+        console.log('err: ', err);
     })
-
 };

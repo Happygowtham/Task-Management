@@ -10,3 +10,5 @@ export const sendEmail = (data) => {
         }
     })
 }
+
+

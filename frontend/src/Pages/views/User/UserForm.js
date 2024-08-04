@@ -1,6 +1,7 @@
 import { Box, Button, FormControl, InputLabel, MenuItem, Modal, Select, TextField, Typography } from "@mui/material"
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../axiosInstance";
+import { sendEmail } from "../../../helper/SendEmail";
 
 const style = {
     position: 'absolute',
@@ -21,6 +22,7 @@ const UserForm = ({ data, show, onClose }) => {
         name: "",
         role: "",
     }
+    const user = JSON.parse(localStorage?.getItem("task_management_user"));
     const [formData, setFormData] = useState(intialValue)
     const [errors, setErrors] = useState(intialValue);
 
@@ -53,6 +55,11 @@ const UserForm = ({ data, show, onClose }) => {
                 }
             }).then(res => {
                 onClose()
+                sendEmail({
+                    to: formData?._id,
+                    subject: "User Role Updated",
+                    content: `${user?.name} has changed your personal information`
+                })
             })
         }
     }

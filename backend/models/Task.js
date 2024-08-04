@@ -13,6 +13,7 @@ const TaskSchema = new Schema({
   priority: { type: String, enum: ['1', '2', '3'], default: '1' },
   status: { type: String, enum: ['pending', 'in-progress', 'completed'], default: 'pending' },
   assignedTo: { type: Schema.Types.ObjectId, ref: 'User' },
+  createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
   projectId: { type: Schema.Types.ObjectId, ref: 'Project' },
   files: [{ type: [Schema.Types.ObjectId] }],
   comments: [{ type: [Schema.Types.ObjectId], ref: 'Comment' }],
