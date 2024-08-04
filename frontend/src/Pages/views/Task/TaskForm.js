@@ -92,7 +92,7 @@ const TaskForm = ({ data, show, onClose, user, type }) => {
                     projectId: formData?.projectId,
                     status: formData?.status,
                     title: formData?.title,
-                    createdBy: user?._id,
+                    createdBy: data === "" ? user?._id : data?.createdBy,
                 }
             }).then(res => {
                 onClose()

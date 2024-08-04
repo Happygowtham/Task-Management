@@ -2,7 +2,7 @@ const Task = require('../models/Task');
 
 exports.getMyTasks = async (req, res) => {
     try {
-        const data = await Task.find()
+        const data = await Task.find({ assignedTo: req.params.userId })
             .then(function (response) {
                 return res.status(200).json({
                     statuscode: 200,
@@ -23,7 +23,7 @@ exports.getMyTasks = async (req, res) => {
 
 exports.getAssignedTasks = async (req, res) => {
     try {
-        const data = await Task.find()
+        const data = await Task.find({ createdBy: req.params.userId })
             .then(function (response) {
                 return res.status(200).json({
                     statuscode: 200,

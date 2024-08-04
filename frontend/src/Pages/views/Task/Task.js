@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import axiosInstance from "../../../axiosInstance"
-import { Box, Button, Card, CardContent, Grid, IconButton, Rating, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, Chip, Grid, IconButton, Rating, Typography } from "@mui/material";
 import TaskForm from "./TaskForm";
 import DeleteIcon from '@mui/icons-material/Delete';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
@@ -63,7 +63,10 @@ const Task = ({ type }) => {
             }
             <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
                 <Typography variant='h5' sx={{ mb: 2 }}>Tasks</Typography>
-                <Button variant="contained" color="primary" size="small" onClick={() => setModal({ show: true, data: "" })}>Add Task</Button>
+                {
+                    type === "assigned" &&
+                    <Button variant="contained" color="primary" size="small" onClick={() => setModal({ show: true, data: "" })}>Add Task</Button>
+                }
             </Box>
             <Grid container spacing={2}>
                 {data?.length > 0 ? data.map((item, index) => (
@@ -84,7 +87,9 @@ const Task = ({ type }) => {
                                     max={3}
                                     readOnly
                                     disableHoverRating
+                                    sx={{ pb: 1 }}
                                 />
+                                <Chip label={item?.status} color="info" size="small" sx={{ ml: 1 }} />
                                 <Typography variant="body2">
                                     {item.description}
                                 </Typography>
