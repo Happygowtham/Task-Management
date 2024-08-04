@@ -113,6 +113,8 @@ const MenuLandingPage = ({ children }) => {
             localStorage.removeItem("task_management_token");
             localStorage.removeItem("task_management_user");
             navigate("/")
+        }).catch(err => {
+            console.log(err)
         })
     }
 
